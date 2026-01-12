@@ -41,6 +41,9 @@ Note: RCON must be enabled for the container (the server will be started with RC
 # Start a server
 curl -X POST http://localhost:8000/servers/{insert_server_name}/start
 
+# Stop a server
+curl -X POST http://localhost:8000/servers/{insert_server_name}/stop
+
 # Delete a server
 ```bash
 # graceful delete (will attempt to stop first):

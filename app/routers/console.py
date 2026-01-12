@@ -72,22 +72,28 @@ async def websocket_console(websocket: WebSocket, name: str):
             command = await websocket.receive_text()
 
             # If RCON is configured, send via RCON; otherwise fallback to exec_run
-            if rcon_password and (host_port or rcon_port):
-                host = "127.0.0.1"
-                port_to_use = host_port or rcon_port
-                try:
-                    resp = await _send_rcon_command(host, port_to_use, rcon_password, command)
-                    # Some RCON libraries return empty string for success; indicate OK
-                    await websocket.send_text(resp or "RCON: OK")
-                except Exception as e:
-                    await websocket.send_text(f"ERROR: RCON command failed: {e}")
-            else:
-                # fallback to running a command inside the container
-                container.exec_run(
-                    cmd=command,
-                    stdin=False,
-                    tty=False
-                )
+            # if rcon_password and (host_port or rcon_port):
+            #     host = "127.0.0.1"
+            #     port_to_use = host_port or rcon_port
+            #     try:
+            #         resp = await _send_rcon_command(host, port_to_use, rcon_password, command)
+            #         # Some RCON libraries return empty string for success; indicate OK
+            #         await websocket.send_text(resp or "RCON: OK")
+            #     except Exception as e:
+            #         await websocket.send_text(f"ERROR: RCON command failed: {e}")
+            # else:
+            #     # fallback to running a command inside the container
+            #     container.exec_run(
+            #         cmd=command,
+            #         stdin=False,
+            #         tty=False
+            #     )
+            # fallback to running a command inside the container
+            container.exec_run(
+                cmd=command,
+                stdin=False,
+                tty=False
+            )
     except WebSocketDisconnect:
         pass
     except Exception as e:

@@ -178,58 +178,6 @@ def list_servers():
     ]
 
 
-@router.get("/{name}/rcon_test")
-def rcon_test(name: str):
-    """Attempt an RCON connection to the server and return a simple test result."""
-    try:
-        container = get_container(name)
-    except Exception as e:
-        raise HTTPException(status_code=404, detail="Container not found")
-
-    # parse env
-    try:
-        env_list = container.attrs.get("Config", {}).get("Env", []) or []
-        env = {k: v for k, v in (s.split("=", 1) for s in env_list if "=" in s)}
-    except Exception:
-        env = {}
-
-    rcon_password = env.get("RCON_PASSWORD")
-    rcon_port = int(env.get("RCON_PORT")) if env.get("RCON_PORT") else None
-
-    if not rcon_password or not rcon_port:
-        raise HTTPException(status_code=400, detail="RCON not configured for this server")
-
-    # Determine host/port to connect to. Prefer host-mapped port if present.
-    host = "127.0.0.1"
-    port_to_use = None
-    try:
-        ports = container.attrs.get("NetworkSettings", {}).get("Ports", {}) or {}
-        if f"{rcon_port}/tcp" in ports and ports[f"{rcon_port}/tcp"]:
-            port_to_use = int(ports[f"{rcon_port}/tcp"][0].get("HostPort"))
-        else:
-            # fallback to container IP
-            ip = container.attrs.get("NetworkSettings", {}).get("IPAddress")
-            if not ip:
-                networks = container.attrs.get("NetworkSettings", {}).get("Networks", {}) or {}
-                if networks:
-                    ip = next(iter(networks.values())).get("IPAddress")
-            if ip:
-                host = ip
-                port_to_use = rcon_port
-    except Exception:
-        pass
-
-    if not port_to_use:
-        raise HTTPException(status_code=500, detail="Could not determine host port or container IP for RCON")
-
-    try:
-        with MCRcon(host, rcon_password, port=port_to_use) as m:
-            resp = m.command("list")
-        return {"ok": True, "response": resp}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"RCON connection failed: {e}")
-
-
 @router.get("/{name}/logs")
 def server_logs(name: str):
     try:
