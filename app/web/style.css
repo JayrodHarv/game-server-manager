@@ -1,0 +1,27 @@
+body {
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: monospace;
+  padding: 20px;
+}
+
+input, select, button {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+  padding: 6px;
+  margin: 4px 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+pre {
+  background: black;
+  color: #22c55e;
+  height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #334155;
+}

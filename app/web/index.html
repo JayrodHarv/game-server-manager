@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Server Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Game Server Manager</h1>
+
+<section>
+  <h2>Create Server</h2>
+
+  <label>
+    Server Name:
+    <input id="server-name" placeholder="mc-test">
+  </label>
+
+  <label>
+    Game:
+    <select id="game">
+      <option value="minecraft">Minecraft</option>
+    </select>
+  </label>
+
+  <button onclick="createServer()">Create Server</button>
+</section>
+
+<hr>
+
+<section>
+  <h2>Console</h2>
+
+  <label>
+    Server:
+    <input id="console-server" placeholder="mc-test">
+  </label>
+
+  <button onclick="connectConsole()">Connect</button>
+
+  <pre id="console"></pre>
+
+  <input
+    id="command"
+    placeholder="Type command and press Enter"
+    onkeydown="handleCommand(event)"
+  >
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
